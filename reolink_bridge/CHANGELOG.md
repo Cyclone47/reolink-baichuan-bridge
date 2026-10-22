@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Change default HTTP snapshot/API port to `21984` to avoid collisions with standard `go2rtc` or Frigate installations (which occupy port 1984 on host network).
+- Add automatic fallback from port 1984 to `21984` if port 1984 is already occupied by another service on the host.
+
 ## 0.1.2
 
 - Bundle `go2rtc` (v1.9.9) as an internal RTSP multiplexer and snapshot provider to prevent connection storms and GStreamer file descriptor exhaustion (`GLib-ERROR: Creating pipes for GWakeup: Too many open files`).

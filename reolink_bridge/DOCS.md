@@ -14,7 +14,7 @@ Set these options on the app's Configuration tab:
 - `camera_username` and `camera_password`: the doorbell's local device credentials, not the cloud account.
 - `stream`: start with `subStream`, which produced 1920 × 1440 H.264 on the tested firmware. Stream names and resolutions may differ by firmware.
 - `rtsp_port`: `28554`, or another unused port above 1023.
-- `api_port`: `1984`, or another unused port for HTTP snapshots.
+- `api_port`: `21984`, or another unused port for HTTP snapshots.
 - `rtsp_username` and `rtsp_password`: choose separate credentials for the bridge output.
 - `disconnect_when_idle`: keep enabled to allow the battery camera to sleep when no viewer is connected.
 
@@ -23,7 +23,7 @@ Save, start the app and enable Start on boot. Wait for the log to report that th
 ## Add a Home Assistant camera entity
 
 1. Go to Settings → Devices & services → Add integration → Generic Camera.
-2. Set Still Image URL to `http://127.0.0.1:1984/api/frame.jpeg?src=doorbell`.
+2. Set Still Image URL to `http://127.0.0.1:21984/api/frame.jpeg?src=doorbell`.
    Using this endpoint allows Home Assistant to grab snapshots without spawning repeated RTSP streams.
 3. Set Stream Source to `rtsp://127.0.0.1:28554/doorbell` (or `rtsp://127.0.0.1:28554/doorbell/subStream`).
 4. Enter the bridge's `rtsp_username` and `rtsp_password` in the username/password fields. Choose TCP transport.

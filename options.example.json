@@ -8,6 +8,6 @@
   "rtsp_port": 28554,
   "rtsp_username": "homeassistant",
   "rtsp_password": "CHOOSE_A_SEPARATE_STREAM_PASSWORD",
-  "api_port": 1984,
+  "api_port": 21984,
   "disconnect_when_idle": true
 }

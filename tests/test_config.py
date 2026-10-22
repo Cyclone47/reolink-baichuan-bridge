@@ -20,7 +20,7 @@ class BridgeTests(unittest.TestCase):
             'rtsp_username': 'viewer',
             'rtsp_password': 'example-stream-password',
             'rtsp_port': 28554,
-            'api_port': 1984,
+            'api_port': 21984,
             'stream': 'subStream',
             'disconnect_when_idle': True,
         }
@@ -38,7 +38,7 @@ class BridgeTests(unittest.TestCase):
     def test_go2rtc_config_mapping(self):
         raw = bridge.build_go2rtc_config(self.options(), internal_port=38554)
         self.assertIn('listen: ":28554"', raw)
-        self.assertIn('listen: ":1984"', raw)
+        self.assertIn('listen: ":21984"', raw)
         self.assertIn('username: "viewer"', raw)
         self.assertIn('password: "example-stream-password"', raw)
         self.assertIn('rtsp://127.0.0.1:38554/doorbell/subStream', raw)
@@ -46,10 +46,10 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('"doorbell/subStream":', raw)
 
     def test_custom_ports_preserved(self):
-        opts = {**self.options(), 'rtsp_port': 18554, 'api_port': 21984}
+        opts = {**self.options(), 'rtsp_port': 18554, 'api_port': 2984}
         raw = bridge.build_go2rtc_config(opts, internal_port=39999)
         self.assertIn('listen: ":18554"', raw)
-        self.assertIn('listen: ":21984"', raw)
+        self.assertIn('listen: ":2984"', raw)
         self.assertIn('rtsp://127.0.0.1:39999/doorbell/subStream', raw)
 
     def test_password_roundtrip(self):
@@ -70,6 +70,7 @@ class BridgeTests(unittest.TestCase):
             listener.bind(('0.0.0.0', 0))
             listener.listen(1)
             port = listener.getsockname()[1]
+            self.assertFalse(bridge.is_port_free(port))
             with self.assertRaisesRegex(ValueError, f'Cannot bind RTSP port {port}'):
                 bridge.check_port(port, 'RTSP')
 

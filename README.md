@@ -5,7 +5,7 @@
 [![Add repository to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FCyclone47%2Freolink-baichuan-bridge)
 [![Add Generic Camera](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=generic)
 
-![Version](https://img.shields.io/badge/version-0.1.2-blue)
+![Version](https://img.shields.io/badge/version-0.1.3-blue)
 ![Status](https://img.shields.io/badge/status-experimental-orange)
 ![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20aarch64-blue)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
@@ -34,7 +34,7 @@ Reolink camera → local Baichuan UDP → Neolink → go2rtc proxy → authentic
 - **Home Assistant OS** with the app/add-on store. A Proxmox VM running Home Assistant OS is suitable.
 - A supported AMD64 or ARM64 host.
 - A camera reachable over the local network, with its UID and local device credentials.
-- Unused TCP ports for RTSP (default **28554**) and API/Snapshots (default **1984**).
+- Unused TCP ports for RTSP (default **28554**) and API/Snapshots (default **21984**).
 
 This is an app-store repository, so **HACS is not used**. Home Assistant Container users can use [Docker Compose](#docker-compose-for-home-assistant-container).
 
@@ -65,7 +65,7 @@ stream: subStream
 rtsp_port: 28554
 rtsp_username: homeassistant
 rtsp_password: "CHOOSE_A_SEPARATE_STREAM_PASSWORD"
-api_port: 1984
+api_port: 21984
 disconnect_when_idle: true
 ```
 
@@ -79,7 +79,7 @@ Click **Add Generic Camera** above, or use **Settings → Devices & services →
 
 | Field | Value |
 | --- | --- |
-| Still Image URL | `http://127.0.0.1:1984/api/frame.jpeg?src=doorbell` |
+| Still Image URL | `http://127.0.0.1:21984/api/frame.jpeg?src=doorbell` |
 | Stream Source | `rtsp://127.0.0.1:28554/doorbell` |
 | Username | Your bridge `rtsp_username` |
 | Password | Your bridge `rtsp_password` |

@@ -13,7 +13,7 @@ import sys
 import time
 
 DEFAULT_RTSP_PORT = 28554
-DEFAULT_API_PORT = 1984
+DEFAULT_API_PORT = 21984
 DEFAULT_INTERNAL_PORT = 38554
 
 
@@ -127,6 +127,16 @@ def build_config(options, internal_port=DEFAULT_INTERNAL_PORT):
     return build_neolink_config(options, internal_port=internal_port)
 
 
+def is_port_free(port):
+    """Check if a TCP port is currently available to bind on all interfaces."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        try:
+            probe.bind(('0.0.0.0', port))
+            return True
+        except OSError:
+            return False
+
+
 def check_port(port, label='Port'):
     """Catch a busy host port before service listeners start."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
@@ -193,6 +203,12 @@ def main():
         rtsp_port = options.get('rtsp_port', DEFAULT_RTSP_PORT)
         api_port = options.get('api_port', DEFAULT_API_PORT)
         internal_port = int(os.environ.get('INTERNAL_RTSP_PORT', DEFAULT_INTERNAL_PORT))
+
+        if api_port == 1984 and not is_port_free(1984):
+            print("Note: API port 1984 is in use by another service on this host (e.g. go2rtc/Frigate).", flush=True)
+            print(f"      Automatically falling back to port {DEFAULT_API_PORT} for snapshot API.", flush=True)
+            api_port = DEFAULT_API_PORT
+            options['api_port'] = api_port
 
         check_port(rtsp_port, 'RTSP')
         check_port(api_port, 'API')
