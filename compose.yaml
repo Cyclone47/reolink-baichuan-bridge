@@ -1,0 +1,11 @@
+services:
+  reolink_bridge:
+    build: ./reolink_bridge
+    network_mode: host
+    init: true
+    restart: unless-stopped
+    volumes:
+      - ./options.json:/data/options.json:ro
+      - bridge_data:/data
+volumes:
+  bridge_data:

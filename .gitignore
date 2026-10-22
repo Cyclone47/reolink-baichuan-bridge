@@ -1,0 +1,7 @@
+options.json
+*.private.*
+.env
+.env.*
+*.log
+__pycache__/
+*.py[cod]

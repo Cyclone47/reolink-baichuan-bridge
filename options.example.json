@@ -1,0 +1,12 @@
+{
+  "camera_name": "doorbell",
+  "camera_address": "192.168.1.100",
+  "camera_uid": "COPY_DEVICE_UID_HERE",
+  "camera_username": "admin",
+  "camera_password": "SET_LOCAL_DEVICE_PASSWORD",
+  "stream": "subStream",
+  "rtsp_port": 18554,
+  "rtsp_username": "homeassistant",
+  "rtsp_password": "CHOOSE_A_SEPARATE_STREAM_PASSWORD",
+  "disconnect_when_idle": true
+}
