@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Install `ffmpeg` in Docker image so `go2rtc` can transcode video keyframes into JPEG snapshots for `/api/frame.jpeg`.
+
 ## 0.1.3
 
 - Change default HTTP snapshot/API port to `21984` to avoid collisions with standard `go2rtc` or Frigate installations (which occupy port 1984 on host network).

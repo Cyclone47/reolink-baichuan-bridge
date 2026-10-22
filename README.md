@@ -5,7 +5,7 @@
 [![Add repository to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FCyclone47%2Freolink-baichuan-bridge)
 [![Add Generic Camera](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=generic)
 
-![Version](https://img.shields.io/badge/version-0.1.3-blue)
+![Version](https://img.shields.io/badge/version-0.1.4-blue)
 ![Status](https://img.shields.io/badge/status-experimental-orange)
 ![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20aarch64-blue)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
