@@ -5,34 +5,36 @@
 [![Add repository to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FCyclone47%2Freolink-baichuan-bridge)
 [![Add Generic Camera](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=generic)
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Version](https://img.shields.io/badge/version-0.1.2-blue)
 ![Status](https://img.shields.io/badge/status-experimental-orange)
 ![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20aarch64-blue)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
-A Home Assistant app (formerly called an add-on) that wraps [Neolink](https://github.com/QuantumEntangledAndy/neolink), translating Reolink's proprietary Baichuan protocol into an authenticated RTSP stream. Add that stream through Home Assistant's built-in **Generic Camera** integration to get a normal `camera.*` entity.
+A Home Assistant app (formerly called an add-on) that wraps [Neolink](https://github.com/QuantumEntangledAndy/neolink) and [go2rtc](https://github.com/AlexxIT/go2rtc), translating Reolink's proprietary Baichuan protocol into an authenticated, multiplexed RTSP stream and HTTP snapshot endpoint. Add that stream through Home Assistant's built-in **Generic Camera** integration to get a normal `camera.*` entity.
 
 ```text
-Reolink camera → local Baichuan UDP → Neolink → authenticated RTSP → Home Assistant camera
+Reolink camera → local Baichuan UDP → Neolink → go2rtc proxy → authenticated RTSP / HTTP Snapshots → Home Assistant camera
 ```
 
 ## What you get
 
 - Local video and supported audio, without keeping the Reolink desktop app open.
+- Internal **go2rtc** multiplexer preventing connection storms and file descriptor leaks under Home Assistant dashboard polling.
+- Instantaneous HTTP snapshot API (`/api/frame.jpeg?src=<camera>`) for still previews.
 - Configuration through the Home Assistant app UI.
 - Separate credentials for the camera and the RTSP output.
 - Local-only camera discovery; cloud discovery and push registration are disabled.
 - On-demand streaming and idle disconnection for battery cameras.
-- A pinned upstream image, plus a Docker Compose option for Linux hosts.
+- Pinned upstream images, plus a Docker Compose option for Linux hosts.
 
-**Experimental:** AMD64 container build, authentication and live video decoding have been tested. Installation under Home Assistant Supervisor, direct Linux host networking and ARM64 runtime still need target-host validation. Compatibility depends on your camera and firmware; this is not a promise that every Reolink model works. See [validation details](VALIDATION.md).
+**Experimental:** AMD64 container build, authentication, go2rtc multiplexing, and live video decoding have been tested. The app has also been installed on an AMD64 Home Assistant OS VM, and its RTSP stream verified. ARM64 runtime and long-term battery behavior still need validation. Compatibility depends on your camera and firmware; this is not a promise that every Reolink model works. See [validation details](VALIDATION.md).
 
 ## Requirements
 
 - **Home Assistant OS** with the app/add-on store. A Proxmox VM running Home Assistant OS is suitable.
 - A supported AMD64 or ARM64 host.
 - A camera reachable over the local network, with its UID and local device credentials.
-- An unused TCP port for RTSP; the default is **18554**.
+- Unused TCP ports for RTSP (default **28554**) and API/Snapshots (default **1984**).
 
 This is an app-store repository, so **HACS is not used**. Home Assistant Container users can use [Docker Compose](#docker-compose-for-home-assistant-container).
 
@@ -45,7 +47,7 @@ Or add the repository manually:
 1. Open **Settings → Apps → Install app** (older versions: **Settings → Add-ons → Add-on Store**).
 2. Open **⋮ → Repositories**.
 3. Add `https://github.com/Cyclone47/reolink-baichuan-bridge`.
-4. Refresh/check for updates, then select **Reolink Stream Bridge** and choose **Install**.
+4. Refresh/check for updates, then select **Reolink Stream Bridge** and choose **Install** (or **Update**).
 
 The first installation builds the container on your HA host and downloads its dependencies. No prebuilt project image is required.
 
@@ -60,9 +62,10 @@ camera_uid: "COPY_YOUR_DEVICE_UID"
 camera_username: admin
 camera_password: "YOUR_LOCAL_DEVICE_PASSWORD"
 stream: subStream
-rtsp_port: 18554
+rtsp_port: 28554
 rtsp_username: homeassistant
 rtsp_password: "CHOOSE_A_SEPARATE_STREAM_PASSWORD"
+api_port: 1984
 disconnect_when_idle: true
 ```
 
@@ -76,15 +79,15 @@ Click **Add Generic Camera** above, or use **Settings → Devices & services →
 
 | Field | Value |
 | --- | --- |
-| Still Image URL | Leave empty |
-| Stream Source | `rtsp://127.0.0.1:18554/doorbell` |
+| Still Image URL | `http://127.0.0.1:1984/api/frame.jpeg?src=doorbell` |
+| Stream Source | `rtsp://127.0.0.1:28554/doorbell` |
 | Username | Your bridge `rtsp_username` |
 | Password | Your bridge `rtsp_password` |
 | RTSP transport | TCP |
 
-The loopback address applies when the app and Home Assistant Core share the HA OS host network. If needed, replace `127.0.0.1` with the HA machine's LAN IP. If you change `camera_name` or `rtsp_port`, update the URL too.
+> **Tip:** Supplying the `Still Image URL` allows Home Assistant to grab snapshots without spawning repeated FFmpeg RTSP connections, keeping file descriptor usage low and previews snappy.
 
-Home Assistant's `stream` integration is needed when no still-image URL is supplied. Normal configurations with `default_config:` include it. Otherwise, add `stream:` to your HA configuration and restart Home Assistant.
+The loopback address applies when the app and Home Assistant Core share the HA OS host network. If needed, replace `127.0.0.1` with the HA machine's LAN IP. If you change `camera_name` or `rtsp_port`, update the URL too.
 
 Finish setup and give the camera a name. Your resulting entity might be `camera.doorbell`; use the actual entity ID shown in your installation.
 
@@ -124,8 +127,8 @@ The Compose file uses host networking for UDP discovery. Add the stream with Gen
 | Login rejected | Verify the local device username/password; cloud credentials are different. |
 | Discovery times out | Check the UID, camera IP and local UDP/VLAN connectivity. |
 | Stream unavailable immediately after starting | Wait a few seconds for discovery/login, then retry. |
-| RTSP says unauthorized | Use the bridge credentials, not the camera credentials. |
-| Port already in use | Change `rtsp_port` and update the Generic Camera URL. |
+| RTSP says unauthorized | Use exactly the rtsp_username and rtsp_password currently saved in the app. |
+| Port already in use | The app checks for occupied ports at startup. Choose a free rtsp_port / api_port and update the Generic Camera URL. |
 | Battery drains | Close live dashboards, disable preloading and keep idle disconnection enabled. |
 
 See the [full configuration guide](reolink_bridge/DOCS.md). For updates, refresh the app store and install an offered update; restart the app afterwards. To remove it, remove the Generic Camera entry and stop/uninstall the app. You can then remove this repository from the store.
@@ -138,6 +141,6 @@ No personal credentials, device identifiers, camera captures or firmware files a
 
 ## Credits and license
 
-The protocol implementation and RTSP server are provided by [QuantumEntangledAndy/Neolink](https://github.com/QuantumEntangledAndy/neolink), based on [thirtythreeforty/Neolink](https://github.com/thirtythreeforty/neolink). This repository adds Home Assistant packaging and configuration; it uses an unmodified upstream image pinned by digest.
+The protocol implementation and RTSP server are provided by [QuantumEntangledAndy/Neolink](https://github.com/QuantumEntangledAndy/neolink), based on [thirtythreeforty/Neolink](https://github.com/thirtythreeforty/neolink). RTSP multiplexing and snapshot endpoints are provided by [AlexxIT/go2rtc](https://github.com/AlexxIT/go2rtc). This repository adds Home Assistant packaging, supervision, and configuration; it uses unmodified upstream images pinned by digest/tag.
 
 Licensed under [AGPL-3.0](LICENSE). Independent community project; not affiliated with Reolink or Home Assistant.

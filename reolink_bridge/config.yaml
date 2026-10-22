@@ -1,5 +1,5 @@
 name: Reolink Stream Bridge
-version: "0.1.0"
+version: "0.1.2"
 slug: reolink_stream_bridge
 description: Local Baichuan to RTSP bridge for Reolink cameras
 url: https://github.com/Cyclone47/reolink-baichuan-bridge
@@ -11,6 +11,10 @@ boot: auto
 stage: experimental
 init: true
 host_network: true
+ulimits:
+  nofile:
+    soft: 65536
+    hard: 65536
 options:
   camera_name: doorbell
   camera_address: ""
@@ -18,9 +22,10 @@ options:
   camera_username: admin
   camera_password: ""
   stream: subStream
-  rtsp_port: 18554
+  rtsp_port: 28554
   rtsp_username: homeassistant
   rtsp_password: ""
+  api_port: 1984
   disconnect_when_idle: true
 schema:
   camera_name: match(^[a-zA-Z0-9_-]+$)
@@ -32,4 +37,5 @@ schema:
   rtsp_port: port
   rtsp_username: str
   rtsp_password: password
+  api_port: port?
   disconnect_when_idle: bool

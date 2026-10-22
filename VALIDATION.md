@@ -1,13 +1,11 @@
 # Validation
 
-- The AMD64 Docker image built successfully from the supplied Dockerfile.
-- Configuration validation rejected blank credentials, invalid camera names, invalid stream names and invalid ports.
-- A password containing quotes, a backslash and a newline survived TOML serialization unchanged.
-- The generated Neolink configuration used authenticated RTSP and local-only discovery; cloud push registration was disabled.
-- The generated credential file had Unix permissions 0600.
-- The built image authenticated to the actual doorbell and FFmpeg decoded eight seconds of its live video successfully. On Windows this test used the local UDP relay to cross Docker Desktop networking. The Linux host-network path has not been tested on the target VM.
-- The Windows bridge's session-isolation repair separately passed a 130-second continuous video decode with no FFmpeg errors.
-- Installation and camera-entity setup under the user's Home Assistant Supervisor remain to be performed.
-- ARM64 runtime has not been tested.
-
-These checks establish a working container and actual video conversion; they do not establish long-term reliability or battery consumption on the target Home Assistant VM.
+- The AMD64 Docker image builds successfully using a multi-stage build pulling `alexxit/go2rtc:1.9.9` into `quantumentangledandy/neolink:latest`.
+- Configuration validation rejects blank credentials, invalid camera names, invalid stream names and invalid ports.
+- Password serialization handles quotes, backslashes, newlines, and UTF-8 characters across both TOML (Neolink) and YAML (go2rtc).
+- The generated Neolink configuration binds to loopback (`127.0.0.1:38554`) with authenticated RTSP and local-only discovery.
+- The generated go2rtc configuration binds to the configured external RTSP port (`28554`) and HTTP API port (`1984`), mapping both `/<name>` and `/<name>/<stream>` paths to Neolink's loopback stream.
+- File descriptor limits (`nofile` ulimit to 65536 and runtime `RLIMIT_NOFILE`) are applied to prevent GLib `Creating pipes for GWakeup: Too many open files` aborts during client polling.
+- Unit tests (`tests/test_config.py`) pass covering Neolink config generation, go2rtc stream mapping, custom ports, credential escaping, validation rules, and occupied port detection.
+- Version 0.1.0/0.1.1 was installed under Home Assistant OS on an AMD64 VM.
+- Version 0.1.2 resolves the file-descriptor exhaustion and connection-storm issue by placing go2rtc in front of Neolink and providing an HTTP snapshot URL for Generic Camera.

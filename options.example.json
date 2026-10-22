@@ -5,8 +5,9 @@
   "camera_username": "admin",
   "camera_password": "SET_LOCAL_DEVICE_PASSWORD",
   "stream": "subStream",
-  "rtsp_port": 18554,
+  "rtsp_port": 28554,
   "rtsp_username": "homeassistant",
   "rtsp_password": "CHOOSE_A_SEPARATE_STREAM_PASSWORD",
+  "api_port": 1984,
   "disconnect_when_idle": true
 }
