@@ -9,3 +9,5 @@
 - Unit tests (`tests/test_config.py`) pass covering Neolink config generation, go2rtc stream mapping, custom ports, credential escaping, validation rules, and occupied port detection.
 - Version 0.1.0/0.1.1 was installed under Home Assistant OS on an AMD64 VM.
 - Version 0.1.2 resolves the file-descriptor exhaustion and connection-storm issue by placing go2rtc in front of Neolink and providing an HTTP snapshot URL for Generic Camera.
+- Version 0.1.4 adds `ffmpeg` to the Docker image so `go2rtc` can generate JPEG snapshots for `/api/frame.jpeg`.
+- Version 0.1.5 resolves the post-restart `TIME_WAIT` crash loop (`Address already in use`) by setting `SO_REUSEADDR` on port probes, retrying transiently busy ports, and disabling the unused WebRTC listener.

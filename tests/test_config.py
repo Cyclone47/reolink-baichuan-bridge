@@ -39,6 +39,7 @@ class BridgeTests(unittest.TestCase):
         raw = bridge.build_go2rtc_config(self.options(), internal_port=38554)
         self.assertIn('listen: ":28554"', raw)
         self.assertIn('listen: ":21984"', raw)
+        self.assertIn('webrtc:\n  listen: ""', raw)
         self.assertIn('username: "viewer"', raw)
         self.assertIn('password: "example-stream-password"', raw)
         self.assertIn('rtsp://127.0.0.1:38554/doorbell/subStream', raw)
@@ -72,7 +73,16 @@ class BridgeTests(unittest.TestCase):
             port = listener.getsockname()[1]
             self.assertFalse(bridge.is_port_free(port))
             with self.assertRaisesRegex(ValueError, f'Cannot bind RTSP port {port}'):
-                bridge.check_port(port, 'RTSP')
+                bridge.check_port(port, 'RTSP', retries=1)
+
+    def test_port_check_allows_reuseaddr(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('0.0.0.0', 0))
+        port = s.getsockname()[1]
+        s.close()
+        bridge.check_port(port, 'RTSP', retries=1)
+        self.assertTrue(bridge.is_port_free(port))
 
 
 if __name__ == '__main__':

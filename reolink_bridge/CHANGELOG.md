@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Fix container restart crash loop (`Cannot bind API port: Address already in use`) by enabling `SO_REUSEADDR` on port probes so sockets in kernel `TIME_WAIT` state from previous runs do not fail startup.
+- Add retry logic (up to 5 seconds) to port preflight checks to smoothly handle brief process teardowns during restarts.
+- Explicitly disable unused WebRTC listener (`webrtc.listen: ""`) in internal `go2rtc` configuration to prevent binding port 8555 on the host network.
+- Confirm `ffmpeg` bundling in Dockerfile for `/api/frame.jpeg` snapshots, preventing HTTP 500 errors ("camera antwoordde met een serverfout").
+
 ## 0.1.4
 
 - Install `ffmpeg` in Docker image so `go2rtc` can transcode video keyframes into JPEG snapshots for `/api/frame.jpeg`.

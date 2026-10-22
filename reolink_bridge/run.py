@@ -99,6 +99,9 @@ def build_go2rtc_config(options, internal_port=DEFAULT_INTERNAL_PORT):
         '',
         'rtsp:',
         f'  listen: ":{rtsp_port}"',
+        '',
+        'webrtc:',
+        '  listen: ""',
     ]
     if rtsp_user and rtsp_pass:
         lines.extend([
@@ -131,22 +134,29 @@ def is_port_free(port):
     """Check if a TCP port is currently available to bind on all interfaces."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
         try:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             probe.bind(('0.0.0.0', port))
             return True
         except OSError:
             return False
 
 
-def check_port(port, label='Port'):
-    """Catch a busy host port before service listeners start."""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-        try:
-            probe.bind(('0.0.0.0', port))
-        except OSError as exc:
-            raise ValueError(
-                f'Cannot bind {label} port {port}: {exc.strerror}. '
-                f'Choose an unused port in the app configuration.'
-            ) from exc
+def check_port(port, label='Port', retries=5, delay=1.0):
+    """Catch a busy host port before service listeners start, allowing TIME_WAIT reuse and brief restart release."""
+    for attempt in range(retries):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            try:
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                probe.bind(('0.0.0.0', port))
+                return
+            except OSError as exc:
+                if attempt < retries - 1:
+                    time.sleep(delay)
+                    continue
+                raise ValueError(
+                    f'Cannot bind {label} port {port}: {exc.strerror}. '
+                    f'Choose an unused port in the app configuration.'
+                ) from exc
 
 
 def supervise_processes(commands):
