@@ -9,7 +9,7 @@ This app runs Neolink on the Home Assistant machine and converts the camera's lo
 Set these options on the app's Configuration tab:
 
 - `camera_name`: `doorbell` (this becomes the RTSP path).
-- `camera_address`: camera LAN IP, for example `192.168.1.100`.
+- `camera_address`: your camera's local LAN IP address, for example `192.168.1.100` (found in the Reolink app or your router).
 - `camera_uid`: the UID shown in Reolink device information; copy it exactly.
 - `camera_username` and `camera_password`: the camera's local device credentials, not the cloud account.
 - `stream`: choose `subStream` or `mainStream`. Stream names and supported resolutions differ by camera model and firmware.

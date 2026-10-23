@@ -57,7 +57,7 @@ On the app's **Configuration** tab, enter your own values:
 
 ```yaml
 camera_name: doorbell
-camera_address: "192.168.1.100"
+camera_address: "YOUR_CAMERA_IP" # e.g. "192.168.1.100" (your camera's local LAN IP)
 camera_uid: "COPY_YOUR_DEVICE_UID"
 camera_username: admin
 camera_password: "YOUR_LOCAL_DEVICE_PASSWORD"
@@ -69,7 +69,7 @@ api_port: 21984
 disconnect_when_idle: true
 ```
 
-Use the password for the **camera itself**, not your Reolink cloud account. Copy the UID exactly from device information in the Reolink app. Start with `subStream`; its actual resolution varies by firmware.
+Set `camera_address` to your camera's local LAN IP address (found in your router or the Reolink app under Device Info / Network). Use the password for the **camera itself**, not your Reolink cloud account. Copy the UID exactly from device information in the Reolink app. Start with `subStream`; its actual resolution varies by firmware.
 
 Save, start the app and enable **Start on boot**. Check the **Log** tab for a successful login and an available stream. Wake-up and startup can take a few seconds.
 

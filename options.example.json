@@ -1,6 +1,6 @@
 {
   "camera_name": "doorbell",
-  "camera_address": "192.168.1.100",
+  "camera_address": "YOUR_CAMERA_IP",
   "camera_uid": "COPY_DEVICE_UID_HERE",
   "camera_username": "admin",
   "camera_password": "SET_LOCAL_DEVICE_PASSWORD",

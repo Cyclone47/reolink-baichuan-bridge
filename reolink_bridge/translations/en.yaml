@@ -1,0 +1,34 @@
+configuration:
+  camera_name:
+    name: Camera Name
+    description: Name of the stream used in the RTSP path (e.g. doorbell).
+  camera_address:
+    name: Camera IP Address
+    description: The local LAN IP address of your Reolink camera (e.g. 192.168.1.100).
+  camera_uid:
+    name: Camera UID
+    description: The unique device UID found in the Reolink app under Device Info.
+  camera_username:
+    name: Camera Username
+    description: Local username configured on the camera (usually admin).
+  camera_password:
+    name: Camera Password
+    description: Local password for the camera itself (not your Reolink cloud account).
+  stream:
+    name: Stream Quality
+    description: Stream channel to request (subStream or mainStream).
+  rtsp_port:
+    name: RTSP Port
+    description: Local TCP port where the bridge serves the RTSP stream.
+  rtsp_username:
+    name: RTSP Stream Username
+    description: Username used by Home Assistant to authenticate with this bridge.
+  rtsp_password:
+    name: RTSP Stream Password
+    description: Password used by Home Assistant to authenticate with this bridge.
+  api_port:
+    name: Snapshot / API Port
+    description: Local TCP port used for HTTP snapshots and WebRTC API.
+  disconnect_when_idle:
+    name: Disconnect When Idle
+    description: Disconnect camera when no viewer is watching. Enable for battery cameras to allow sleep; disable for hardwired cameras needing continuous streaming.

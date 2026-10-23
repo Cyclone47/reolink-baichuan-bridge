@@ -34,6 +34,11 @@ class BridgeTests(unittest.TestCase):
         self.assertFalse(cfg['cameras'][0]['push_notifications'])
         self.assertTrue(cfg['cameras'][0]['idle_disconnect'])
         self.assertTrue(cfg['cameras'][0]['pause']['on_client'])
+        self.assertNotIn('address', cfg['cameras'][0])
+
+        # When camera_address is provided, it should be mapped
+        cfg_with_ip = tomllib.loads(bridge.build_neolink_config({**self.options(), 'camera_address': '192.168.1.100'}))
+        self.assertEqual(cfg_with_ip['cameras'][0]['address'], '192.168.1.100')
 
     def test_go2rtc_config_mapping(self):
         raw = bridge.build_go2rtc_config(self.options(), internal_port=38554)
