@@ -69,7 +69,7 @@ api_port: 21984
 disconnect_when_idle: true
 ```
 
-Set `camera_address` to your camera's local LAN IP address (found in your router or the Reolink app under Device Info / Network). Use the password for the **camera itself**, not your Reolink cloud account. Copy the UID exactly from device information in the Reolink app. Start with `subStream`; its actual resolution varies by firmware.
+Set `camera_address` to your camera's local LAN IP address (see Reolink guide: [How to Find the IP Address of Reolink Device](https://support.reolink.com/articles/900007660243-How-to-Find-the-IP-Address-of-Reolink-Device/)). Copy the UID exactly from device information in the Reolink app (see Reolink guide: [How to Find the UID for Your Reolink Device](https://support.reolink.com/articles/900005185523-How-to-Find-the-UID-for-Your-Reolink-Device/)). Use the local password for the **camera itself**, not your Reolink cloud account. Start with `subStream`; its actual resolution varies by firmware.
 
 Save, start the app and enable **Start on boot**. Check the **Log** tab for a successful login and an available stream. Wake-up and startup can take a few seconds.
 
