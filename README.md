@@ -31,7 +31,7 @@ Reolink camera → local Baichuan UDP → Neolink → go2rtc proxy → authentic
 
 ## Requirements
 
-- **Home Assistant OS** with the app/add-on store. A Proxmox VM running Home Assistant OS is suitable.
+- **Home Assistant OS** with the app/add-on store. A Proxmox VM or Docker running Home Assistant OS is suitable.
 - A supported AMD64 or ARM64 host.
 - A camera reachable over the local network, with its UID and local device credentials.
 - Unused TCP ports for RTSP (default **28554**) and API/Snapshots (default **21984**).
