@@ -11,12 +11,12 @@ Set these options on the app's Configuration tab:
 - `camera_name`: `doorbell` (this becomes the RTSP path).
 - `camera_address`: camera LAN IP, for example `192.168.1.100`.
 - `camera_uid`: the UID shown in Reolink device information; copy it exactly.
-- `camera_username` and `camera_password`: the doorbell's local device credentials, not the cloud account.
-- `stream`: start with `subStream`, which produced 1920 × 1440 H.264 on the tested firmware. Stream names and resolutions may differ by firmware.
+- `camera_username` and `camera_password`: the camera's local device credentials, not the cloud account.
+- `stream`: choose `subStream` or `mainStream`. Stream names and supported resolutions differ by camera model and firmware.
 - `rtsp_port`: `28554`, or another unused port above 1023.
 - `api_port`: `21984`, or another unused port for HTTP snapshots.
 - `rtsp_username` and `rtsp_password`: choose separate credentials for the bridge output.
-- `disconnect_when_idle`: keep enabled to allow the battery camera to sleep when no viewer is connected.
+- `disconnect_when_idle`: keep enabled to allow battery cameras to sleep when no viewer is connected (can be disabled for hardwired setups needing continuous streaming).
 
 Save, start the app and enable Start on boot. Wait for the log to report that the camera is connected and the stream is available. Credentials are stored in the app's private data. Neolink may include the camera UID in its logs.
 
@@ -27,7 +27,7 @@ Save, start the app and enable Start on boot. Wait for the log to report that th
    Using this endpoint allows Home Assistant to grab snapshots without spawning repeated RTSP streams.
 3. Set Stream Source to `rtsp://127.0.0.1:28554/doorbell` (or `rtsp://127.0.0.1:28554/doorbell/subStream`).
 4. Enter the bridge's `rtsp_username` and `rtsp_password` in the username/password fields. Choose TCP transport.
-5. Finish setup and name the camera Doorbell. Add the resulting `camera.*` entity to a dashboard or use it in camera actions.
+5. Finish setup and name the camera (e.g. Doorbell or Front Camera). Add the resulting `camera.*` entity to a dashboard or use it in camera actions.
 
 With Home Assistant OS, Core and this app use the host network, so the loopback URL is appropriate. You can also use the Home Assistant machine's LAN address. In other Docker arrangements, use an address reachable from the Home Assistant container. If the username/password fields do not work with your client, use `rtsp://USER:PASSWORD@HOST:28554/doorbell`, percent-encoding special characters in credentials.
 

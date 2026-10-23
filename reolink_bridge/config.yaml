@@ -1,7 +1,7 @@
 name: Reolink Stream Bridge
 version: "0.1.5"
 slug: reolink_stream_bridge
-description: Local Baichuan to RTSP bridge for Reolink cameras
+description: Local Baichuan to RTSP bridge for Reolink cameras without native RTSP/ONVIF
 url: https://github.com/Cyclone47/reolink-baichuan-bridge
 arch:
   - amd64

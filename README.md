@@ -1,6 +1,6 @@
 # Reolink Baichuan Bridge
 
-**Bring a Reolink camera's local video stream into Home Assistant—even when the camera does not expose RTSP.**
+**Bring local video from Reolink cameras without native RTSP/ONVIF into Home Assistant.**
 
 [![Add repository to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FCyclone47%2Freolink-baichuan-bridge)
 [![Add Generic Camera](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=generic)
@@ -10,7 +10,7 @@
 ![Architectures](https://img.shields.io/badge/architectures-amd64%20%7C%20aarch64-blue)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
-A Home Assistant app (formerly called an add-on) that wraps [Neolink](https://github.com/QuantumEntangledAndy/neolink) and [go2rtc](https://github.com/AlexxIT/go2rtc), translating Reolink's proprietary Baichuan protocol into an authenticated, multiplexed RTSP stream and HTTP snapshot endpoint. Add that stream through Home Assistant's built-in **Generic Camera** integration to get a normal `camera.*` entity.
+A Home Assistant app (add-on) that wraps [Neolink](https://github.com/QuantumEntangledAndy/neolink) and [go2rtc](https://github.com/AlexxIT/go2rtc), translating Reolink's proprietary Baichuan protocol into an authenticated, multiplexed RTSP stream and HTTP snapshot endpoint for unsupported Reolink cameras (such as battery-powered models or cameras lacking native RTSP/ONVIF). Add that stream through Home Assistant's built-in **Generic Camera** integration to get a normal `camera.*` entity.
 
 ```text
 Reolink camera → local Baichuan UDP → Neolink → go2rtc proxy → authenticated RTSP / HTTP Snapshots → Home Assistant camera
@@ -24,14 +24,14 @@ Reolink camera → local Baichuan UDP → Neolink → go2rtc proxy → authentic
 - Configuration through the Home Assistant app UI.
 - Separate credentials for the camera and the RTSP output.
 - Local-only camera discovery; cloud discovery and push registration are disabled.
-- On-demand streaming and idle disconnection for battery cameras.
+- On-demand streaming and idle disconnection for battery cameras (can be disabled for hardwired continuous streaming).
 - Pinned upstream images, plus a Docker Compose option for Linux hosts.
 
 **Experimental:** AMD64 container build, authentication, go2rtc multiplexing, and live video decoding have been tested. The app has also been installed on an AMD64 Home Assistant OS VM, and its RTSP stream verified. ARM64 runtime and long-term battery behavior still need validation. Compatibility depends on your camera and firmware; this is not a promise that every Reolink model works. See [validation details](VALIDATION.md).
 
 ## Requirements
 
-- **Home Assistant OS** with the app/add-on store. A Proxmox VM or Docker running Home Assistant OS is suitable.
+- **Home Assistant OS** with the app/add-on store. A Proxmox VM running Home Assistant OS is suitable.
 - A supported AMD64 or ARM64 host.
 - A camera reachable over the local network, with its UID and local device credentials.
 - Unused TCP ports for RTSP (default **28554**) and API/Snapshots (default **21984**).
