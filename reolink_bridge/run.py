@@ -54,6 +54,8 @@ def validate_options(options):
     idle = options.get('disconnect_when_idle', True)
     if not isinstance(idle, bool):
         raise ValueError('disconnect_when_idle must be true or false')
+    if not isinstance(options.get('enable_snapshots', True), bool):
+        raise ValueError('enable_snapshots must be true or false')
 
 
 def build_neolink_config(options, internal_port=DEFAULT_INTERNAL_PORT):
@@ -93,9 +95,11 @@ def build_go2rtc_config(options, internal_port=DEFAULT_INTERNAL_PORT):
     rtsp_user = options.get('rtsp_username', '')
     rtsp_pass = options.get('rtsp_password', '')
 
+    # An empty listen address disables go2rtc's HTTP API, and with it the snapshot endpoint.
+    api_listen = f':{api_port}' if options.get('enable_snapshots', True) else ''
     lines = [
         'api:',
-        f'  listen: ":{api_port}"',
+        f'  listen: "{api_listen}"',
         '',
         'rtsp:',
         f'  listen: ":{rtsp_port}"',
@@ -214,14 +218,16 @@ def main():
         api_port = options.get('api_port', DEFAULT_API_PORT)
         internal_port = int(os.environ.get('INTERNAL_RTSP_PORT', DEFAULT_INTERNAL_PORT))
 
-        if api_port == 1984 and not is_port_free(1984):
+        snapshots = options.get('enable_snapshots', True)
+        if snapshots and api_port == 1984 and not is_port_free(1984):
             print("Note: API port 1984 is in use by another service on this host (e.g. go2rtc/Frigate).", flush=True)
             print(f"      Automatically falling back to port {DEFAULT_API_PORT} for snapshot API.", flush=True)
             api_port = DEFAULT_API_PORT
             options['api_port'] = api_port
 
         check_port(rtsp_port, 'RTSP')
-        check_port(api_port, 'API')
+        if snapshots:
+            check_port(api_port, 'API')
         check_port(internal_port, 'Internal RTSP')
 
         neolink_cfg = build_neolink_config(options, internal_port=internal_port)
@@ -251,12 +257,16 @@ def main():
     print('====================================================', flush=True)
     print(f'Reolink Stream Bridge starting (Neolink + go2rtc proxy)', flush=True)
     print(f'  External RTSP port: {rtsp_port}', flush=True)
-    print(f'  Snapshot/API port:  {api_port}', flush=True)
+    if snapshots:
+        print(f'  Snapshot/API port:  {api_port}', flush=True)
+    else:
+        print('  Snapshots:          disabled (enable_snapshots: false)', flush=True)
     print(f'  Camera name:        {name} ({stream})', flush=True)
     print('', flush=True)
     print('Home Assistant Generic Camera configuration:', flush=True)
     print(f'  Stream Source:   rtsp://127.0.0.1:{rtsp_port}/{name}/{stream}', flush=True)
-    print(f'  Still Image URL: http://127.0.0.1:{api_port}/api/frame.jpeg?src={name}', flush=True)
+    if snapshots:
+        print(f'  Still Image URL: http://127.0.0.1:{api_port}/api/frame.jpeg?src={name}', flush=True)
     print(f'  RTSP transport:  tcp', flush=True)
     print(f'  Username/Pass:   use rtsp_username / rtsp_password configured in this app', flush=True)
     print('====================================================', flush=True)

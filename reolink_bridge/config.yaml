@@ -27,6 +27,7 @@ options:
   rtsp_password: ""
   api_port: 21984
   disconnect_when_idle: true
+  enable_snapshots: true
 schema:
   camera_name: match(^[a-zA-Z0-9_-]+$)
   camera_address: str
@@ -39,3 +40,4 @@ schema:
   rtsp_password: password
   api_port: port?
   disconnect_when_idle: bool
+  enable_snapshots: bool?

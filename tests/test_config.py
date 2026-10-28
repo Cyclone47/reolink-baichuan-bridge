@@ -51,6 +51,13 @@ class BridgeTests(unittest.TestCase):
         self.assertIn('doorbell:', raw)
         self.assertIn('"doorbell/subStream":', raw)
 
+    def test_snapshots_can_be_disabled(self):
+        raw = bridge.build_go2rtc_config({**self.options(), 'enable_snapshots': False})
+        self.assertIn('api:\n  listen: ""', raw)
+        self.assertIn('listen: ":28554"', raw)
+        with self.assertRaises(ValueError):
+            bridge.build_go2rtc_config({**self.options(), 'enable_snapshots': 'no'})
+
     def test_custom_ports_preserved(self):
         opts = {**self.options(), 'rtsp_port': 18554, 'api_port': 2984}
         raw = bridge.build_go2rtc_config(opts, internal_port=39999)

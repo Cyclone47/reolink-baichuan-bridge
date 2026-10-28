@@ -16,6 +16,7 @@ Set these options on the app's Configuration tab:
 - `rtsp_port`: `28554`, or another unused port above 1023.
 - `api_port`: `21984`, or another unused port for HTTP snapshots.
 - `rtsp_username` and `rtsp_password`: choose separate credentials for the bridge output.
+- `enable_snapshots`: set to `false` to turn off the HTTP snapshot endpoint (and `api_port`). Each snapshot connects to the camera and wakes it, so disable this for battery cameras and leave the Generic Camera Still Image URL empty.
 - `disconnect_when_idle`: keep enabled to allow battery cameras to sleep when no viewer is connected (can be disabled for hardwired setups needing continuous streaming).
 
 Save, start the app and enable Start on boot. Wait for the log to report that the camera is connected and the stream is available. Credentials are stored in the app's private data. Neolink may include the camera UID in its logs.

@@ -32,3 +32,6 @@ configuration:
   disconnect_when_idle:
     name: Disconnect When Idle
     description: Disconnect camera when no viewer is watching. Enable for battery cameras to allow sleep; disable for hardwired cameras needing continuous streaming.
+  enable_snapshots:
+    name: Enable Snapshots
+    description: Serve still images over HTTP. Every snapshot request wakes a battery camera, so disable this for battery cameras and use the live stream only.
