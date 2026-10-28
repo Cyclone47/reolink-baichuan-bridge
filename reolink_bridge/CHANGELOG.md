@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+- Add `enable_snapshots` option (default `true`). Set it to `false` to disable the HTTP snapshot endpoint, since every snapshot request connects to and wakes a battery camera.
+
 ## 0.1.5
 
 - Fix container restart crash loop (`Cannot bind API port: Address already in use`) by enabling `SO_REUSEADDR` on port probes so sockets in kernel `TIME_WAIT` state from previous runs do not fail startup.
