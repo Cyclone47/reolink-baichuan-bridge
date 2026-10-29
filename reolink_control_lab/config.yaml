@@ -1,0 +1,52 @@
+name: Reolink Control Lab
+version: "0.1.0"
+slug: reolink_control_lab
+description: Experimental local controls, telemetry, snapshots and MQTT discovery for Reolink
+url: https://github.com/Cyclone47/reolink-baichuan-bridge/tree/feature/doorbell-control-lab
+arch: [amd64, aarch64]
+startup: application
+boot: manual
+stage: experimental
+init: true
+host_network: true
+ingress: true
+ingress_port: 0
+panel_icon: mdi:doorbell-video
+panel_title: Reolink Control Lab
+panel_admin: true
+hassio_api: true
+hassio_role: default
+options:
+  camera_name: Doorbell
+  camera_address: ""
+  camera_uid: ""
+  camera_username: admin
+  camera_password: ""
+  camera_channel: 0
+  read_only: true
+  allow_disruptive_actions: false
+  enable_events: false
+  replace_existing_webhook: false
+  poll_interval: 0
+  mqtt_host: ""
+  mqtt_port: 1883
+  mqtt_username: ""
+  mqtt_password: ""
+  mqtt_tls: false
+schema:
+  camera_name: str
+  camera_address: str
+  camera_uid: str
+  camera_username: str
+  camera_password: password
+  camera_channel: int(0,63)
+  read_only: bool
+  allow_disruptive_actions: bool
+  enable_events: bool
+  replace_existing_webhook: bool
+  poll_interval: int(0,86400)
+  mqtt_host: str
+  mqtt_port: port
+  mqtt_username: str
+  mqtt_password: password
+  mqtt_tls: bool

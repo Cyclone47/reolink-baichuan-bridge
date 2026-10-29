@@ -1,0 +1,2 @@
+reolink-aio==0.21.18
+aiomqtt==2.5.1
