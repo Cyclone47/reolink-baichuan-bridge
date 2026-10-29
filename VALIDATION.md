@@ -6,4 +6,4 @@
 - The localhost web panel was run against the real device with writes, MQTT and events disabled.
 - Home Assistant Supervisor installation, Home Assistant entity creation from MQTT, actual webhook reception and ARM64 runtime still need target-host testing.
 - Firmware-advertised write capabilities are not marked as verified merely because their read path works.
-- Local Docker Desktop was unavailable during preparation. The branch includes a GitHub Actions image-build check; inspect its result before treating the container build as validated.
+- GitHub Actions passed all 16 tests on Linux and built the AMD64 Docker image successfully: https://github.com/Cyclone47/reolink-baichuan-bridge/actions/runs/40891461056. Local Docker Desktop was unavailable; no ARM64 image runtime test was performed.
